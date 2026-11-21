@@ -86,30 +86,30 @@ class GradesWindow(QWidget):
         file_path, _ = QFileDialog.getOpenFileName(self, "Select Grades File", "", "CSV Files (*.csv)")
         if not file_path:
             return
+        
+        self.selected_file = file_path
+        df = pd.read_csv(self.selected_file)
 
-        # TODO (שלך לפי ההנחיות):
-        # 1. שמור את שם/נתיב הקובץ במשתנה self.selected_file
-        # 2. פתח את הקובץ וטען ממנו את נתוני הסטודנטים לרשימות self.student_ids ו-self.original_grades
-        # 3. הכנס את אותם ערכים גם ל-self.corrected_grades
-        # 4. קרא למתודה self.update_table_from_lists()
-        pass
+        self.student_ids = df["ID"].tolist()
+        self.original_grades = df["Grade"].tolist()
+        self.corrected_grades = (self.original_grades)
+
+        self.update_table_from_lists()
 
     def on_bonus_enter(self):
-        # TODO (שלך לפי ההנחיות):
-        # 1. קח את הערך המספרי מהווידג'ט (self.bonus_spinbox.value())
-        # 2. רוץ על רשימת הציונים המקוריים וחשב לכל אחד: ציון מקורי + ערך, אך לא יותר מ-100
-        # 3. עדכן את self.corrected_grades
-        # 4. קרא שוב ל-self.update_table_from_lists()
-        pass
+        bonus = self.bonus_spinbox.value()
+        self.corrected_grades = [min(100, g + bonus) for g in self.original_grades]
+        self.update_table_from_lists()
 
     def on_update_file(self):
-        # TODO (שלך לפי ההנחיות):
-        # 1. דרוס את הקובץ המקורי (self.selected_file) עם הנתונים החדשים הכוללים רק את הציונים המתוקנים
-        # 2. שמור על הכותרות המקוריות של הקובץ
-        pass
+       if not self.selected_file:
+            return
 
-        # פתיחה אוטומטית של הקובץ בכל מערכת הפעלה
-        if self.selected_file:
+       df = pd.read_csv(self.selected_file)
+       df["Grade"] = self.corrected_grades
+       df.to_csv(self.selected_file, index=False)
+        
+       if self.selected_file:
             if sys.platform.startswith("win"):
                 os.startfile(self.selected_file)
             elif sys.platform == "darwin":
