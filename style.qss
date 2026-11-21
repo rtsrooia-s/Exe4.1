@@ -1,0 +1,9 @@
+QWidget {font-size: 13px;}
+
+QPushButton {padding: 6px 12px;}
+
+QSpinBox {padding: 4px 8px;}
+
+QTableWidget {gridline-color: #cccccc;}
+
+QHeaderView::section {padding: 4px; font-weight: bold;}
